@@ -1,15 +1,26 @@
 .textarea {
   position: absolute;
-  left: -1000px;
+  left: 500px;
+}
+
+.wrapper {
+  display: flex;
+}
+
+.user {
+  font-size: 14px;
+  font-family: cursor, courier;
 }
 
 .cursor {
-  position: relative;
+  position: absolute;
   color: #fff;
   background-color: #fff;
-  font-size: 12px;
   animation: blinker 1s linear infinite;
-  backdrop-filter: invert(80%);
+  width: 8px;
+  height: 2px;
+  bottom: 1px;
+  left: 0;
 }
 
 .terminal {
@@ -19,12 +30,9 @@
 }
 
 .writer {
+  position: relative;
   font-family: cursor, courier;
   font-weight: bold;
-}
-
-.getter {
-  margin: 5px;
 }
 
 @keyframes blinker {

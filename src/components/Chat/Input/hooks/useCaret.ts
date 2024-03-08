@@ -1,36 +1,36 @@
-import { RefObject, useEffect } from 'react';
+import { RefObject, useEffect, useState, useCallback } from 'react';
+
+import { debounce } from '../../../../helpers/debounce';
 
 const useCaret = (
   cursorRef: RefObject<HTMLSpanElement>,
   writerRef: RefObject<HTMLSpanElement>,
-  inputText: string
+  inputText: string,
+  textAreaRef: RefObject<HTMLTextAreaElement>
 ) => {
+  const [letterLength, setLetterLength] = useState(0);
+
   useEffect(() => {
-    document.addEventListener('keydown', function (e: KeyboardEvent) {
-      if (e.code === 'ArrowRight') {
-        move(10);
-      }
+    if (!writerRef.current) return;
 
-      if (e.code === 'ArrowLeft') {
-        move(-10);
-      }
-    });
-  }, []);
+    const currentFontSize = parseInt(
+      window.getComputedStyle(writerRef.current).fontSize
+    );
+    const calculatedLength = currentFontSize * 0.6039;
 
-  const move = (step?: number) => {
+    setLetterLength(calculatedLength);
+  }, [letterLength]);
+
+  const move = () => {
     const cursor = cursorRef.current;
 
-    if (!cursor) return;
+    console.log('move');
+    
+    const caretPos = textAreaRef.current?.selectionStart;
 
-    const currentLeft = parseFloat(cursor.style.left) || 0;
+    if (!cursor || caretPos === undefined) return;
 
-    if (step) {
-      cursor.style.left = `${currentLeft + step}px`;
-
-      return;
-    }
-
-    cursor.style.left = `${inputText.length * 10}px`;
+    cursor.style.left = `${caretPos * letterLength}px`;
   };
 
   return { move };
