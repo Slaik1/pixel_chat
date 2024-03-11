@@ -1,4 +1,11 @@
-import { useRef, FC, useEffect, useState, ChangeEvent, KeyboardEvent } from 'react';
+import {
+  useRef,
+  FC,
+  useEffect,
+  useState,
+  ChangeEvent,
+  KeyboardEvent,
+} from 'react';
 
 import useCaret from './hooks/useCaret';
 
@@ -6,11 +13,17 @@ import styles from './Input.module.scss';
 
 const Terminal: FC = () => {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const writerRef = useRef<HTMLSpanElement>(null);
-  const cursorRef = useRef<HTMLBRElement>(null);
+  const writerRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLSpanElement>(null);
+  const userRef = useRef<HTMLParagraphElement>(null);
   const [inputText, setInputText] = useState('');
 
-  const { move } = useCaret(cursorRef, writerRef, inputText, textAreaRef);
+  const { calculateMove } = useCaret(
+    cursorRef,
+    writerRef,
+    textAreaRef,
+    userRef
+  );
 
   useEffect(() => {
     textAreaRef.current?.focus();
@@ -35,13 +48,13 @@ const Terminal: FC = () => {
   };
 
   const onKeyDownHandler = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if(e.code === 'Space' && inputText.at(-1) === ' ') {
-      e.preventDefault()
-      
-      return
+    if (e.code === 'Space' && inputText.at(-1) === ' ') {
+      e.preventDefault();
+
+      return;
     }
-    move()
-  }
+    setTimeout(calculateMove, 10);
+  };
 
   return (
     <div className={styles.terminal}>
@@ -53,11 +66,13 @@ const Terminal: FC = () => {
         ref={textAreaRef}
       ></textarea>
       <div className={styles.wrapper}>
-        <h1 className={styles.user}>C:\Users\Slaik&gt;</h1>
-        <span className={styles.writer} ref={writerRef}>
-        <>{inputText}</>
-          <b className={styles.cursor} ref={cursorRef}></b>
-        </span>
+        <p className={styles.user} ref={userRef}>
+          C:\Users\Slaik&gt;
+        </p>
+        <div className={styles.writer} ref={writerRef}>
+          {inputText}
+          <span className={styles.cursor} ref={cursorRef}></span>
+        </div>
       </div>
     </div>
   );
