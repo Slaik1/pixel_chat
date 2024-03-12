@@ -1,15 +1,13 @@
 import { FC } from 'react';
 
-import styles from './Message.module.scss'
+import styles from './Message.module.scss';
 
 interface MessageProps {
-	message: string;
+  message: string;
 }
 
-const Message: FC<MessageProps> = ({message}) => {
-	return (
-		<p className={styles.message}>{message}</p>
-	)
-}
+const Message: FC<MessageProps> = ({ message }) => {
+  return <p className={styles.message}>{message}</p>;
+};
 
-export default Message
+export default Message;

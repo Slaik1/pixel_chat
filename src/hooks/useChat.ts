@@ -21,7 +21,7 @@ const useChat = () => {
         setMessages((prevArr) => [...prevArr, message]);
       } else {
         console.log('пришёл массив' + message);
-				setMessages((prevArr) => [...prevArr, ...message]);
+        setMessages((prevArr) => [...prevArr, ...message]);
       }
     };
 

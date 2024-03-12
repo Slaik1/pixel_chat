@@ -22,15 +22,38 @@ const useCaret = (
       window.getComputedStyle(writerRef.current).fontSize
     );
     const calculatedLetterLength = currentFontSize * 0.601;
-    const calculatedLetterHeight = currentFontSize * 1;
+    const calculatedLetterHeight = currentFontSize * 1.08;
     const calculatedUserLength = userRef.current.innerText.length;
-
-    console.log(calculatedUserLength);
 
     setLetterLength(calculatedLetterLength);
     setLetterHeight(calculatedLetterHeight);
     setUserLength(calculatedUserLength);
-  }, []);
+
+    calculateMove();
+  }, [userLength]);
+
+  const calculateCursorPosition = (
+    caretPos: number,
+    maxLettersPerLine: number,
+    userLength: number
+  ): CaretPos => {
+    let cursorLeftPos = caretPos % maxLettersPerLine;
+    let cursorTopPos = Math.floor(caretPos / maxLettersPerLine);
+
+    if (cursorTopPos === 0) {
+      cursorLeftPos += userLength;
+    } else {
+      const maxLettersPerLine = Math.floor(window.innerWidth / letterLength);
+
+      cursorLeftPos = (caretPos + userLength) % maxLettersPerLine;
+      cursorTopPos = Math.floor((caretPos + userLength) / maxLettersPerLine);
+    }
+
+    return {
+      top: cursorTopPos,
+      left: cursorLeftPos,
+    };
+  };
 
   const move = (cursor: HTMLSpanElement, pos: CaretPos) => {
     cursor.style.left = `${pos.left * letterLength}px`;
@@ -39,35 +62,19 @@ const useCaret = (
 
   const calculateMove = () => {
     const cursor = cursorRef.current;
-
-    console.log('calculateMove');
-
     const caretPos = textAreaRef.current?.selectionStart;
 
     if (!cursor || caretPos === undefined) return;
 
-    let maxLettersPerLine = Math.floor(
+    const maxLettersPerLine = Math.floor(
       (window.innerWidth - userLength * letterLength) / letterLength
     );
 
-    let cursorLeftPos = caretPos % maxLettersPerLine;
-
-    let cursorTopPos = Math.floor(caretPos / maxLettersPerLine);
-
-    if (cursorTopPos === 0) {
-      cursorLeftPos += userLength;
-    } else {
-      maxLettersPerLine = Math.floor(window.innerWidth / letterLength);
-
-      cursorLeftPos = (caretPos + userLength) % maxLettersPerLine;
-
-      cursorTopPos = Math.floor((caretPos + userLength) / maxLettersPerLine);
-    }
-
-    const newPos: CaretPos = {
-      top: cursorTopPos,
-      left: cursorLeftPos,
-    };
+    const newPos = calculateCursorPosition(
+      caretPos,
+      maxLettersPerLine,
+      userLength
+    );
 
     move(cursor, newPos);
   };

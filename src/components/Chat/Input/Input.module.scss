@@ -13,15 +13,14 @@
     position: relative;
 
     .user {
-      font-family: cursor, courier;
       font-size: 14px;
       font-weight: 600;
       float: left;
+      cursor: default;
     }
 
     .writer {
       max-width: 100dvw;
-      font-family: cursor, courier;
       font-weight: bold;
       word-break: break-all;
 
@@ -30,17 +29,25 @@
         bottom: 1px;
         left: 0;
         height: 2px;
-        width: 8px;
+        width: 7.5px;
         color: #fff;
         background-color: #fff;
-        animation: blinker 1s linear infinite;
+        animation: blinker 1.5s linear infinite;
       }
     }
   }
 }
 
 @keyframes blinker {
+  0% {
+    opacity: 0%;
+  }
+
   50% {
+    opacity: 100%;
+  }
+
+  100% {
     opacity: 0%;
   }
 }

@@ -26,20 +26,20 @@ const Terminal: FC = () => {
   );
 
   useEffect(() => {
-    textAreaRef.current?.focus();
+    const textArea = textAreaRef.current;
+
+    if (!textArea) return;
+
+    textArea.focus();
 
     const handleFocus = () => {
-      textAreaRef.current?.focus();
+      textArea.focus();
     };
 
-    if (textAreaRef.current) {
-      textAreaRef.current.addEventListener('blur', handleFocus);
-    }
+    textArea.addEventListener('blur', handleFocus);
 
     return () => {
-      if (textAreaRef.current) {
-        textAreaRef.current.removeEventListener('blur', handleFocus);
-      }
+      textArea.removeEventListener('blur', handleFocus);
     };
   }, []);
 
@@ -53,6 +53,13 @@ const Terminal: FC = () => {
 
       return;
     }
+    if (e.code === 'Enter') {
+      e.preventDefault();
+      console.log('отправил сообщение');
+
+      return;
+    }
+
     setTimeout(calculateMove, 10);
   };
 
@@ -64,13 +71,14 @@ const Terminal: FC = () => {
         onChange={changeHandler}
         onKeyDown={onKeyDownHandler}
         ref={textAreaRef}
+        maxLength={450}
       ></textarea>
       <div className={styles.wrapper}>
         <p className={styles.user} ref={userRef}>
           C:\Users\Slaik&gt;
         </p>
         <div className={styles.writer} ref={writerRef}>
-          {inputText}
+          <p>{inputText}</p>
           <span className={styles.cursor} ref={cursorRef}></span>
         </div>
       </div>
